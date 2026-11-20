@@ -801,7 +801,7 @@ async fn clear_ready_matching_clears_ready_mut() {
 }
 
 #[tokio::test]
-#[cfg_attr(miri, ignore)] // No socket in miri.
+#[cfg_attr(miri, ignore = "Miri does not yet support SO_TIMESTAMP")]
 #[cfg(target_os = "linux")]
 async fn await_error_readiness_timestamping() {
     use std::net::{Ipv4Addr, SocketAddr};
@@ -858,7 +858,7 @@ fn configure_timestamping_socket(udp_socket: &std::net::UdpSocket) -> std::io::R
 }
 
 #[tokio::test]
-#[cfg_attr(miri, ignore)] // No socket in miri.
+#[cfg_attr(miri, ignore = "Miri does not support `sendmsg`")]
 #[cfg(target_os = "linux")]
 async fn await_error_readiness_invalid_address() {
     use std::net::{Ipv4Addr, SocketAddr};

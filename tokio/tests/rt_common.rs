@@ -997,7 +997,6 @@ rt_test! {
     }
 
     #[cfg(not(target_os="wasi"))] // Wasi doesn't support UDP or bind()
-    #[cfg_attr(miri, ignore)] // No UDP sockets in miri.
     #[test]
     fn io_notify_while_shutting_down() {
         use tokio::net::UdpSocket;

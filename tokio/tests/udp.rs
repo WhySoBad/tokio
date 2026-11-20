@@ -1,13 +1,11 @@
 #![warn(rust_2018_idioms)]
 // WASIp1 doesn't support bind
-// No UDP sockets on miri.
 #![cfg(all(
     feature = "net",
     feature = "macros",
     feature = "rt",
     feature = "io-util",
     not(all(target_os = "wasi", target_env = "p1")),
-    not(miri)
 ))]
 
 use std::future::poll_fn;
@@ -736,29 +734,32 @@ macro_rules! test {
     };
 }
 
-#[cfg(not(target_os = "wasi"))] // WASI does not yet support broadcast
+#[cfg(not(any(target_os = "wasi", miri)))] // WASI does not yet support broadcast, Miri does not yet support this socket option.
 test!(broadcast, set_broadcast(true));
 
-#[cfg(not(target_os = "wasi"))] // WASI does not yet support multicast
+#[cfg(not(any(target_os = "wasi", miri)))] // WASI does not yet support multicast, Miri does not yet support this socket option.
 test!(IPv4 multicast_loop_v4, set_multicast_loop_v4(false));
 
-#[cfg(target_os = "linux")] // broken on non-Linux platforms https://github.com/rust-lang/socket2/pull/630
+#[cfg(all(target_os = "linux", not(miri)))] // broken on non-Linux platforms https://github.com/rust-lang/socket2/pull/630, Miri does not yet support this socket option.
 test!(multicast_ttl_v4, set_multicast_ttl_v4(40));
 
-#[cfg(not(target_os = "wasi"))] // WASI does not yet support multicast
+#[cfg(not(any(target_os = "wasi", miri)))] // WASI does not yet support multicast, Miri does not yet support this socket option.
 test!(IPv6 multicast_loop_v6, set_multicast_loop_v6(false));
 
-#[cfg(any(
-    target_os = "android",
-    target_os = "dragonfly",
-    target_os = "freebsd",
-    target_os = "fuchsia",
-    target_os = "linux",
-    target_os = "macos",
-    target_os = "netbsd",
-    target_os = "openbsd",
-    target_os = "cygwin",
-))]
+#[cfg(all(
+    any(
+        target_os = "android",
+        target_os = "dragonfly",
+        target_os = "freebsd",
+        target_os = "fuchsia",
+        target_os = "linux",
+        target_os = "macos",
+        target_os = "netbsd",
+        target_os = "openbsd",
+        target_os = "cygwin",
+    ),
+    not(miri)) // Miri does not yet support this socket option.
+)]
 test!(IPv6 tclass_v6, set_tclass_v6(96));
 
 test!(IPv4 ttl, set_ttl(40));
@@ -769,6 +770,7 @@ test!(IPv4 ttl, set_ttl(40));
     target_os = "solaris",
     target_os = "illumos",
     target_os = "haiku",
-    target_os = "wasi"
+    target_os = "wasi",
+    miri // Miri does not yet support this socket option.
 )))]
 test!(IPv4 tos_v4, set_tos_v4(96));

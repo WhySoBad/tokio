@@ -291,7 +291,6 @@ rt_test! {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // No UDP sockets in miri.
     fn udp_socket_bind() {
         let rt = rt();
         let _enter = rt.enter();
@@ -301,7 +300,6 @@ rt_test! {
             .unwrap();
     }
 
-    #[cfg_attr(miri, ignore)] // No UDP sockets in miri.
     #[test]
     fn udp_stream_bind_after_shutdown() {
         let rt = rt();
@@ -316,7 +314,6 @@ rt_test! {
         assert!(tokio::runtime::is_rt_shutdown_err(&err));
     }
 
-    #[cfg_attr(miri, ignore)] // No UDP sockets in miri.
     #[test]
     fn udp_stream_bind_before_shutdown() {
         let rt = rt();

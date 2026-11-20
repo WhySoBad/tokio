@@ -1,6 +1,5 @@
 #![warn(rust_2018_idioms)]
 #![cfg(any(feature = "full", all(target_os = "emscripten", feature = "rt")))]
-#![cfg(not(miri))] // No socket in miri.
 
 use std::io;
 #[cfg(not(target_family = "wasm"))]
