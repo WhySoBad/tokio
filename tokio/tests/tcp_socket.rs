@@ -49,7 +49,6 @@ async fn basic_usage_v6() {
 }
 
 #[tokio::test]
-#[cfg_attr(miri, ignore = "Miri doesn't support binding before connecting")]
 async fn bind_before_connect() {
     // Create server
     let any_addr = assert_ok!("127.0.0.1:0".parse());
@@ -70,7 +69,6 @@ async fn bind_before_connect() {
 
 #[cfg_attr(target_os = "wasi", ignore = "WASI does not yet support `SO_LINGER`")]
 #[tokio::test]
-#[cfg_attr(miri, ignore = "Miri doesn't support `SO_LINGER`")]
 async fn basic_linger() {
     // Create server
     let addr = assert_ok!("127.0.0.1:0".parse());
@@ -139,19 +137,11 @@ const GET_BUF_SIZE: u32 = SET_BUF_SIZE;
 const GET_BUF_SIZE: u32 = 2 * SET_BUF_SIZE;
 
 test!(
-    #[cfg_attr(
-        miri,
-        ignore = "Miri doesn't support setting the keepalive socket option"
-    )]
     keepalive,
     set_keepalive(true)
 );
 
 test!(
-    #[cfg_attr(
-        miri,
-        ignore = "Miri doesn't support reading the reuseaddr socket option"
-    )]
     reuseaddr,
     set_reuseaddr(true)
 );
@@ -193,14 +183,12 @@ test!(
 
 test!(
     #[cfg_attr(target_os = "wasi", ignore = "WASI does not yet support `SO_LINGER`")]
-    #[cfg_attr(miri, ignore = "Miri doesn't support `SO_LINGER`")]
     #[expect(deprecated, reason = "set_linger is deprecated")]
     linger,
     set_linger(Some(Duration::from_secs(10)))
 );
 
 test!(
-    #[cfg_attr(miri, ignore = "Miri only supports `TCP_NODELAY` on connected sockets")]
     nodelay,
     set_nodelay(true)
 );

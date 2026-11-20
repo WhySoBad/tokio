@@ -714,7 +714,7 @@ fn driver_shutdown_wakes_poll_race() {
 }
 
 #[tokio::test]
-#[cfg_attr(miri, ignore)] // No socket in miri.
+#[cfg_attr(miri, ignore = "Miri's epoll does not support priority interests")]
 #[cfg(any(target_os = "linux", target_os = "android"))]
 async fn priority_event_on_oob_data() {
     use std::net::SocketAddr;
